@@ -22,12 +22,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
+    public static final String REPORT_CACHE_NAME = "reportCache";
+    public static final int CACHE_CLEAR_RATE_MINUTES = 5;
     private final SalesAndTrafficByDateRepository salesAndTrafficByDateRepository;
     private final SalesAndTrafficByAsinRepository salesAndTrafficByAsinRepository;
     private final SalesAndTrafficByDateMapper salesAndTrafficByDateMapper;
     private final SalesAndTrafficByAsinMapper salesAndTrafficByAsinMapper;
 
-    @Cacheable(value = "reportCache")
+    @Cacheable(value = REPORT_CACHE_NAME)
     @Override
     public List<SalesAndTrafficByDateDto> findAllSalesAndTrafficByDate(Pageable pageable) {
         return salesAndTrafficByDateRepository.findAll(pageable).stream()
@@ -35,7 +37,7 @@ public class ReportServiceImpl implements ReportService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "reportCache")
+    @Cacheable(value = REPORT_CACHE_NAME)
     @Override
     public List<SalesAndTrafficByAsinDto> findAllSalesAndTrafficByAsin(Pageable pageable) {
         return salesAndTrafficByAsinRepository.findAll(pageable).stream()
@@ -43,7 +45,7 @@ public class ReportServiceImpl implements ReportService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "reportCache")
+    @Cacheable(value = REPORT_CACHE_NAME)
     @Override
     public List<SalesAndTrafficByDateDto> findAllSalesAndTrafficBySelectedDates(
             Pageable pageable,
@@ -72,7 +74,7 @@ public class ReportServiceImpl implements ReportService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "reportCache")
+    @Cacheable(value = REPORT_CACHE_NAME)
     @Override
     public List<SalesAndTrafficByAsinDto> findAllSalesAndTrafficBySelectedAsins(
             Pageable pageable,
@@ -86,8 +88,8 @@ public class ReportServiceImpl implements ReportService {
                 .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = "reportCache", allEntries = true)
-    @Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
+    @CacheEvict(value = REPORT_CACHE_NAME, allEntries = true)
+    @Scheduled(fixedRate = CACHE_CLEAR_RATE_MINUTES, timeUnit = TimeUnit.MINUTES)
     public void clearCache() {
     }
 }

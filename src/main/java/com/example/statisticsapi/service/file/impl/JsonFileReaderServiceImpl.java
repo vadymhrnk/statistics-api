@@ -11,6 +11,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JsonFileReaderServiceImpl implements FileReaderService {
+
+    public static final String READ_ERROR_MESSAGE = "Can't read from file: %s";
+    public static final String EMPTY_STRING = "";
+    public static final String SPACE_REGEX = "\\s+";
+
     @Override
     public List<String> readFromFile(String filePath) {
         try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(filePath))) {
@@ -18,12 +23,12 @@ public class JsonFileReaderServiceImpl implements FileReaderService {
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
-                jsonContent.append(line.trim().replaceAll("\\s+", ""));
+                jsonContent.append(line.trim().replaceAll(SPACE_REGEX, EMPTY_STRING));
             }
 
             return Collections.singletonList(jsonContent.toString());
         } catch (IOException e) {
-            throw new RuntimeException("Can't read from file: %s".formatted(filePath), e);
+            throw new RuntimeException(READ_ERROR_MESSAGE.formatted(filePath), e);
         }
     }
 }

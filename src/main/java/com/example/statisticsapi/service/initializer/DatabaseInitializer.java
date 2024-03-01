@@ -24,6 +24,7 @@ public class DatabaseInitializer {
     public static final String FILE_PATH = "src/main/resources/static/test_report.json";
     public static final int FIRST_INDEX = 0;
     public static final String ERROR_MESSAGE = "Can't process JSON.";
+    public static final int UPDATE_RATE_MINUTES = 15;
 
     private final FileReaderService fileReaderService;
     private final ObjectMapper objectMapper;
@@ -40,7 +41,7 @@ public class DatabaseInitializer {
         reportRepository.save(entity);
     }
 
-    @Scheduled(fixedRate = 15,timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedRate = UPDATE_RATE_MINUTES, timeUnit = TimeUnit.MINUTES)
     public void update() {
         Report entity = getReport();
 
